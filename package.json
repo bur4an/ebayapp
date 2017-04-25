@@ -1,0 +1,20 @@
+{
+  "name": "ebayapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "burhan",
+  "license": "ISC",
+  "dependencies": {
+    "crypto": "0.0.3",
+    "ebay-api": "^1.13.1",
+    "express": "^4.15.2",
+    "fast-csv": "^2.4.0",
+    "jade": "^1.11.0",
+    "lodash": "^4.17.4",
+    "mongoose": "^4.9.6"
+  }
+}
