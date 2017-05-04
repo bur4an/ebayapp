@@ -5,8 +5,8 @@ var express = require('express'),
     http = require('http'),
     path = require('path'),
     mongoose = require('mongoose'),
-    hash = require('./pass').hash;
-
+    hash = require('./pass').hash,
+    request = require('./request');
 var app = express();
 
 /*
@@ -146,8 +146,8 @@ app.post("/login", function (req, res) {
             req.session.regenerate(function () {
 
                 req.session.user = user;
-                req.session.success = 'Authenticated as ' + user.username + ' click to <a href="/logout">logout</a>. ' + ' You may now access <a href="/restricted">/restricted</a>.';
-                res.redirect('/');
+                req.session.success = 'Authenticated as ' + user.username + ' click to <a href="/logout">logout</a>. ' + ' You may now access <a href="/profile">/restricted</a>.';
+                res.redirect('/listing');
             });
         } else {
             req.session.error = 'Authentication failed, please check your ' + ' username and password.';
@@ -162,9 +162,13 @@ app.get('/logout', function (req, res) {
     });
 });
 
-app.get('/profile', requiredAuthentication, function (req, res) {
-    res.send('Profile page of '+ req.session.user.username +'<br>'+' click to <a href="/logout">logout</a>');
+app.get('/listing', requiredAuthentication, request.list, function(req, res){
+    res.render('index', {list: request.results});
 });
-
-
+/*app.post('/listing', requiredAuthentication, request.list, function (req, res) {
+    res.render('index', 
+                {list: request.results,
+                item: {id: req.body.id, price: req.body.price}}
+              )      
+});*/
 http.createServer(app).listen(3000);
