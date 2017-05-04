@@ -19,16 +19,17 @@ block content
   p #{item.id} has #{item.price} price
  table.table
   tbody
-   each li in list.searchResult.item
+   each li in list
     tr
      td
-      img(src=li.galleryURL)
+      img(src=li.PictureURL, height='300px', width='300px')
      td
       div.details
-       p.price #{li.sellingStatus.currentPrice.amount}
+       p.price #{li.CurrentPrice.amount}
+       p.sold #{li.QuantitySold}
        div.form-group
         form(name="revise", method="post", action='/listing')
          input(type="text", name="price", size="6")
-         input(type="hidden", name="id", value=li.itemId)
+         input(type="hidden", name="id", value=li.ItemId)
          input(type="submit", value="update")
-       a(target="_blank", href=li.viewItemURL) #{li.title}
+       a(target="_blank", href=li.ViewItemURLForNaturalSearch) #{li.Title}

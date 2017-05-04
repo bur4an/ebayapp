@@ -163,7 +163,7 @@ app.get('/logout', function (req, res) {
 });
 
 app.get('/listing', requiredAuthentication, request.list, function(req, res){
-    res.render('index', {list: request.results});
+    res.render('index', {list: request.items});
 });
 /*app.post('/listing', requiredAuthentication, request.list, function (req, res) {
     res.render('index', 
