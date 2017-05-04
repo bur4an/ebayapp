@@ -147,6 +147,7 @@ app.post("/login", function (req, res) {
 
                 req.session.user = user;
                 req.session.success = 'Authenticated as ' + user.username + ' click to <a href="/logout">logout</a>. ' + ' You may now access <a href="/profile">/restricted</a>.';
+                req.session.brand = 'garmin';
                 res.redirect('/listing');
             });
         } else {
@@ -163,12 +164,16 @@ app.get('/logout', function (req, res) {
 });
 
 app.get('/listing', requiredAuthentication, request.list, function(req, res){
-    res.render('index', {list: request.items});
+    res.render('index', {list: request.items, revise: request.revisedItem});
 });
-/*app.post('/listing', requiredAuthentication, request.list, function (req, res) {
+app.post('/listing', requiredAuthentication, request.list, function (req, res) {
+    req.session.brand = req.body.keyword;
     res.render('index', 
-                {list: request.results,
-                item: {id: req.body.id, price: req.body.price}}
+                {list: request.items}
               )      
-});*/
+});
+app.post('/update', requiredAuthentication, request.update, function (req, res) {
+    console.log(request.revisedItem);
+    res.redirect('/listing') 
+});
 http.createServer(app).listen(3000);

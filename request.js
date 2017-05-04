@@ -1,9 +1,14 @@
 var keys = require('./keys'),
     ebay = require('ebay-api');
 exports.list = function (req, res, next) {
-    exports.items = [];
+    exports.items = []; var keyword;
         //res.send('Profile page of '+ req.session.user.username +'<br>'+' click to <a href="/logout">logout</a>');
-        var keyword = 'garmin', store = 'eSuperPrices';
+        if(req.session.brand)
+            keyword = req.session.brand;
+        else
+            keyword = req.body.keyword;
+        var store = 'eSuperPrices';
+        console.log(keyword);
         ebay.xmlRequest({
           serviceName : 'Finding',
           opType : 'findItemsIneBayStores',
@@ -22,7 +27,8 @@ exports.list = function (req, res, next) {
                 itemFilter: [{
                                 name: 'HideDuplicateItems',
                                 value: 'true'
-                            },]
+                            },],
+                sortOrder: 'BestMatch'
                 }
         }, function(err, out){
         if(err) console.log(err);
@@ -74,4 +80,32 @@ exports.list = function (req, res, next) {
         else res.redirect('/listing');
     });
         
+}
+exports.update = function (req, res, next){
+    exports.revisedItem = {};
+    if(req.body.price > 0 && req.body.id)
+	ebay.xmlRequest({
+				  serviceName : 'Trading',
+				  opType : 'ReviseFixedPriceItem',
+				  devId: keys.devId,
+				  certId: keys.certId,
+				  appId: keys.appId,
+				  sandbox: false,
+				  authToken: keys.token,
+				  params: {
+					  Item:{
+						ItemID: req.body.id,
+						StartPrice: req.body.price,
+						}
+					  }
+					}, function(er, update) {
+					  // ...
+						if(er) console.log(er);
+				        if(update){
+                            exports.revisedItem = update;
+                            next();
+                        }
+                            
+					});
+    else res.redirect('/listing');
 }
