@@ -1,0 +1,13 @@
+  .price {
+   font-weight:bold;
+   font-size: 18px;
+  }
+  .query {
+   font-style:italic	
+  }
+  .sold {
+   color:green
+  }
+.details {
+   margin-top: 15px;  
+  }

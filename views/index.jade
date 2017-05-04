@@ -1,0 +1,34 @@
+extends layout
+
+block content
+ script.
+    function update(){
+        /*
+        var req = new XMLHttpRequest();
+        req.open("POST","/listing");
+        req.onreadystatechange = function(){
+            if(req.readyState == 4){
+                window.location.reload(true);
+                document.write(req.body.id);
+            }
+        }
+        req.send();
+        */
+    }
+ if(item)
+  p #{item.id} has #{item.price} price
+ table.table
+  tbody
+   each li in list.searchResult.item
+    tr
+     td
+      img(src=li.galleryURL)
+     td
+      div.details
+       p.price #{li.sellingStatus.currentPrice.amount}
+       div.form-group
+        form(name="revise", method="post", action='/listing')
+         input(type="text", name="price", size="6")
+         input(type="hidden", name="id", value=li.itemId)
+         input(type="submit", value="update")
+       a(target="_blank", href=li.viewItemURL) #{li.title}
