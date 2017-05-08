@@ -2,39 +2,58 @@ extends layout
 
 block content
  script.
-   function update(id){
+   var update = function (id){
+    var price = document.getElementById("price").value;
+    var ItemId = id;
     var req = new XMLHttpRequest();
     req.open("POST","/update");
     req.onreadystatechange = function(){
-    if(req.readyState == 4){
-     //window.location.reload(true);
-     document.write(req.body.id);
+     if(req.readyState == 4){
+      console.log(req.response);
+      //window.location.reload(true);
+      //document.write(req.body.id);
+     }
+     else console.log(req.readyState);
     }
-    }
-    req.send(id);
+    req.send(price, id);
    }
  if(item)
   p #{item.id} has #{item.price} price
  div.form-group
   form(name="list", method="post", action='/listing')
-   input(type="text", name="keyword", size="10")
+   input(type="text",placeholder="Brand Name", name="keyword", size="20")
+   input(type="text",placeholder="Store Name", name="seller", size="20")
    input(type="submit", value="Search")
- table.table
+
+ table.table(align="center")
   tbody
    if(list) 
     each li in list
      tr
-      td
-       img(src=li.PictureURL, height='250px', width='250px')
-      td
+      td(width="10%")
+       img(src=li.GalleryURL)
+      td(width="40%")
        div.details
         p.price #{li.CurrentPrice.amount}
+        if(li.ingram)
+         p.cost #{li.ingram["Customer Price with Tax"]}
         p.sold #{li.QuantitySold}
         div.form-group
-         form(name="update", method="post", action='/update')
-          input(type="text", name="price", size="6")
-          input(type="hidden", name="id", value=li.ItemID)
-          input(type="submit", value="Update")
+         //form(name="update", method="post", action='/update')
+         input(type="text", id="price", name="price", size="6")
+         //input(type="hidden", name="id", value=li.ItemID)
+         input(type="button", value="Update" onclick="update()")
         a(target="_blank", href=li.ViewItemURLForNaturalSearch) #{li.Title}
         if(revise && revise.Ack != 'Failure' && revise.ItemID == li.ItemID)
-         p.query #{revise.ItemID} updated successfully. 
+         p.query #{revise.ItemID} updated successfully.
+      if(li.seller)
+       td(width="10%")
+        img(src=li.seller.GalleryURL)
+       td(width="40%")
+        div.details
+         if(parseFloat(li.seller.CurrentPrice.amount) < parseFloat(li.CurrentPrice.amount))
+          p.price(style="color:red") #{li.seller.CurrentPrice.amount}
+         else
+          p.price(style="color:green") #{li.seller.CurrentPrice.amount}
+         p.sold #{li.seller.QuantitySold}
+         a(target="_blank", href=li.seller.ViewItemURLForNaturalSearch) #{li.seller.Title}

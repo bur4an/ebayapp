@@ -102,7 +102,7 @@ app.get("/", function (req, res) {
     }
 });
 
-app.get("/signup", function (req, res) {
+/*app.get("/signup", function (req, res) {
     if (req.session.user) {
         res.redirect("/");
     } else {
@@ -133,7 +133,7 @@ app.post("/signup", userExist, function (req, res) {
             });
         });
     });
-});
+});*/
 
 app.get("/login", function (req, res) {
     res.render("login");
@@ -147,7 +147,6 @@ app.post("/login", function (req, res) {
 
                 req.session.user = user;
                 req.session.success = 'Authenticated as ' + user.username + ' click to <a href="/logout">logout</a>. ' + ' You may now access <a href="/profile">/restricted</a>.';
-                req.session.brand = 'garmin';
                 res.redirect('/listing');
             });
         } else {
@@ -163,17 +162,17 @@ app.get('/logout', function (req, res) {
     });
 });
 
-app.get('/listing', requiredAuthentication, request.list, function(req, res){
-    res.render('index', {list: request.items, revise: request.revisedItem});
+app.get('/listing', requiredAuthentication, function(req, res){
+    res.render('index', {list: request.items});
 });
-app.post('/listing', requiredAuthentication, request.list, function (req, res) {
-    req.session.brand = req.body.keyword;
+app.post('/listing', requiredAuthentication, request.list, request.cost, request.seller, function (req, res) {
     res.render('index', 
                 {list: request.items}
               )      
 });
 app.post('/update', requiredAuthentication, request.update, function (req, res) {
-    console.log(request.revisedItem);
-    res.redirect('/listing') 
+    //console.log(request.revisedItem);
+    console.log(req.ItemId, req.body.price);
+    res.send(request.revisedItem)
 });
 http.createServer(app).listen(3000);

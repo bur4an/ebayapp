@@ -1,13 +1,14 @@
   .price {
    font-weight:bold;
-   font-size: 18px;
+   font-size: 18px
   }
-  .query {
-   font-style:italic	
+  .cost {
+   font-style:italic;
+   font-weight:bold
   }
   .sold {
    color:green
   }
   .details {
-   margin-top: 15px;  
+   margin-top: 15px 
   }
