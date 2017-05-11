@@ -6,7 +6,8 @@ var express = require('express'),
     path = require('path'),
     mongoose = require('mongoose'),
     hash = require('./pass').hash,
-    request = require('./request');
+    request = require('./request'),
+    bodyParser = require('body-parser');
 var app = express();
 
 /*
@@ -26,6 +27,8 @@ Middlewares and configurations
 */
 app.configure(function () {
     app.use(express.bodyParser());
+    app.use(bodyParser.json());
+    app.use(express.json());
     app.use(express.cookieParser('Authentication Tutorial '));
     app.use(express.session());
     app.use(express.static(path.join(__dirname, 'public')));
@@ -165,14 +168,12 @@ app.get('/logout', function (req, res) {
 app.get('/listing', requiredAuthentication, function(req, res){
     res.render('index', {list: request.items});
 });
-app.post('/listing', requiredAuthentication, request.list, request.cost, request.seller, function (req, res) {
-    res.render('index', 
-                {list: request.items}
-              )      
+app.post('/listing', requiredAuthentication, request.list, request.seller, function (req, res) {
+    res.redirect('/listing');      
 });
-app.post('/update', requiredAuthentication, request.update, function (req, res) {
+app.post('/update', function (req, res) {
     //console.log(request.revisedItem);
-    console.log(req.ItemId, req.body.price);
-    res.send(request.revisedItem)
+    console.log(req.body);
+    //res.send()
 });
 http.createServer(app).listen(3000);

@@ -2,11 +2,16 @@ extends layout
 
 block content
  script.
-   var update = function (id){
-    var price = document.getElementById("price").value;
-    var ItemId = id;
+   var data = {};
+   var setPrice = function (p,i){
+    data.price = p;
+    data.id = i;
+   }
+   var update = function (){
+    console.log(data);
     var req = new XMLHttpRequest();
     req.open("POST","/update");
+    req.setRequestHeader("Content-Type", "application/JSON;charset=UTF-8");
     req.onreadystatechange = function(){
      if(req.readyState == 4){
       console.log(req.response);
@@ -15,10 +20,8 @@ block content
      }
      else console.log(req.readyState);
     }
-    req.send(price, id);
+    req.send(JSON.stringify(data));
    }
- if(item)
-  p #{item.id} has #{item.price} price
  div.form-group
   form(name="list", method="post", action='/listing')
    input(type="text",placeholder="Brand Name", name="keyword", size="20")
@@ -39,10 +42,9 @@ block content
          p.cost #{li.ingram["Customer Price with Tax"]}
         p.sold #{li.QuantitySold}
         div.form-group
-         //form(name="update", method="post", action='/update')
-         input(type="text", id="price", name="price", size="6")
-         //input(type="hidden", name="id", value=li.ItemID)
-         input(type="button", value="Update" onclick="update()")
+         //form(name="update", method="post", action='#', onsubmit="update()")
+         input(type="text", name="price", size="6", onchange="setPrice(this.value, #{li.ItemID})")
+         input(type="button", value="Update", onclick="update()")
         a(target="_blank", href=li.ViewItemURLForNaturalSearch) #{li.Title}
         if(revise && revise.Ack != 'Failure' && revise.ItemID == li.ItemID)
          p.query #{revise.ItemID} updated successfully.

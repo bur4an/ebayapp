@@ -125,9 +125,9 @@ exports.seller = function (req, res, next) {
         			
 		ebay.xmlRequest({
         serviceName: 'Finding',
-        opType: paramMaker(storeName, item).opType,
+        opType: paramMaker(storeName, item, req.body.seller).opType,
         appId: keys.appId,
-        params: paramMaker(storeName, item).params,
+        params: paramMaker(storeName, item, req.body.seller).params,
         }, function(error, results) {
         // ...
 			if(error)
@@ -155,12 +155,12 @@ exports.seller = function (req, res, next) {
 	});
 }
 
-function paramMaker (s,i){
+function paramMaker (s,i,r){
     if(s) return {
 		opType : 'findItemsIneBayStores',
 		params : {
 				keywords: keyword(i),
-				storeName: req.body.seller,
+				storeName: r,
 				paginationInput:{
 								entriesPerPage: '1',
 								pageNumber: 1,
