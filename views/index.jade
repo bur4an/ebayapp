@@ -14,11 +14,10 @@ block content
     req.setRequestHeader("Content-Type", "application/JSON;charset=UTF-8");
     req.onreadystatechange = function(){
      if(req.readyState == 4){
-      console.log(req.response);
+      console.log(typeof req.response, req.response);
       //window.location.reload(true);
       //document.write(req.body.id);
      }
-     else console.log(req.readyState);
     }
     req.send(JSON.stringify(data));
    }

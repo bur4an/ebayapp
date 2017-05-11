@@ -85,35 +85,11 @@ exports.list = function(req, res, next) {
 /*
 Update Prices
 */
-exports.update = function(req, res, next) {
+/*exports.update = function(req, res, next) {
     console.log(req.body.id);
     exports.revisedItem = {};
-    if (req.body.price > 0 && req.body.id)
-        ebay.xmlRequest({
-            serviceName: 'Trading',
-            opType: 'ReviseFixedPriceItem',
-            devId: keys.devId,
-            certId: keys.certId,
-            appId: keys.appId,
-            sandbox: false,
-            authToken: keys.token,
-            params: {
-                Item: {
-                    ItemID: req.body.id,
-                    StartPrice: req.body.price,
-                }
-            }
-        }, function(er, update) {
-            // ...
-            if (er) console.log(er);
-            if (update) {
-                exports.revisedItem = update;
-                next();
-            }
-
-        });
-    else res.redirect('/listing');
-}
+    
+}*.
 /*
 Get Seller
 */

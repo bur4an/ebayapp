@@ -7,7 +7,9 @@ var express = require('express'),
     mongoose = require('mongoose'),
     hash = require('./pass').hash,
     request = require('./request'),
-    bodyParser = require('body-parser');
+    bodyParser = require('body-parser'),
+    ebay = require('ebay-api'),
+    keys = require('./keys');
 var app = express();
 
 /*
@@ -168,12 +170,35 @@ app.get('/logout', function (req, res) {
 app.get('/listing', requiredAuthentication, function(req, res){
     res.render('index', {list: request.items});
 });
-app.post('/listing', requiredAuthentication, request.list, request.seller, function (req, res) {
+app.post('/listing', requiredAuthentication, request.list, request.seller, request.cost, function (req, res) {
     res.redirect('/listing');      
 });
 app.post('/update', function (req, res) {
     //console.log(request.revisedItem);
     console.log(req.body);
+    if (req.body.price > 0 && req.body.id)
+        ebay.xmlRequest({
+            serviceName: 'Trading',
+            opType: 'ReviseFixedPriceItem',
+            devId: keys.devId,
+            certId: keys.certId,
+            appId: keys.appId,
+            sandbox: false,
+            authToken: keys.token,
+            params: {
+                Item: {
+                    ItemID: req.body.id,
+                    StartPrice: req.body.price,
+                }
+            }
+        }, function(er, update) {
+            // ...
+            if (er) console.log(er);
+            if (update)
+                res.send(update);
+            else
+                res.send(er)
+        });
     //res.send()
 });
 http.createServer(app).listen(3000);
