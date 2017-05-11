@@ -3,11 +3,12 @@
    font-size: 18px
   }
   .cost {
-   font-style:italic;
    font-weight:bold
   }
   .sold {
-   color:green
+   color:#eb2629;
+   font-weight:bold;
+   font-size: 14px;
   }
   .details {
    margin-top: 15px 

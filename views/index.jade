@@ -9,24 +9,28 @@ block content
    }
    var update = function (){
     console.log(data);
+    var update, sMsg = '';
     var req = new XMLHttpRequest();
     req.open("POST","/update");
     req.setRequestHeader("Content-Type", "application/JSON;charset=UTF-8");
     req.onreadystatechange = function(){
      if(req.readyState == 4){
       console.log(typeof req.response, req.response);
-      //window.location.reload(true);
-      //document.write(req.body.id);
+      update = JSON.parse(req.response);
+      if(update.Errors) sMsg += update.Errors == [] ? update.Errors.forEach(function(error) {return  error.ShortMessage+" ";}) : update.Errors.ShortMessage;
+      document.getElementById(update.ItemID).innerHTML = update.code ? update.code : update.Ack+"! "+sMsg;
+      document.getElementsByName(update.ItemID)[0].innerHTML = "AU $"+data.price;
      }
     }
     req.send(JSON.stringify(data));
    }
+ p(text-align="right") 
+  a(href="/logout") Logout
  div.form-group
   form(name="list", method="post", action='/listing')
    input(type="text",placeholder="Brand Name", name="keyword", size="20")
    input(type="text",placeholder="Store Name", name="seller", size="20")
    input(type="submit", value="Search")
-
  table.table(align="center")
   tbody
    if(list) 
@@ -36,25 +40,30 @@ block content
        img(src=li.GalleryURL)
       td(width="40%")
        div.details
-        p.price #{li.CurrentPrice.amount}
+        label.price(name=li.ItemID) AU $#{li.CurrentPrice.amount}
         if(li.ingram)
-         p.cost #{li.ingram["Customer Price with Tax"]}
-        p.sold #{li.QuantitySold}
-        div.form-group
+         p 
+          | BuyInc: 
+          span.cost #{li.ingram["Customer Price with Tax"]} 
+          | Fee:
+          span.cost #{parseInt(li.CurrentPrice.amount * .105 + .80)} 
+        p 
+         | #{li.Quantity} Available / 
+         span.sold #{li.QuantitySold} sold
+        div.form-group(cellspacing="5px")
          //form(name="update", method="post", action='#', onsubmit="update()")
          input(type="text", name="price", size="6", onchange="setPrice(this.value, #{li.ItemID})")
-         input(type="button", value="Update", onclick="update()")
+         input(type="button", value="Update Price", onclick="update()")
         a(target="_blank", href=li.ViewItemURLForNaturalSearch) #{li.Title}
-        if(revise && revise.Ack != 'Failure' && revise.ItemID == li.ItemID)
-         p.query #{revise.ItemID} updated successfully.
+       label.query(id=li.ItemID)
       if(li.seller)
        td(width="10%")
         img(src=li.seller.GalleryURL)
        td(width="40%")
         div.details
          if(parseFloat(li.seller.CurrentPrice.amount) < parseFloat(li.CurrentPrice.amount))
-          p.price(style="color:red") #{li.seller.CurrentPrice.amount}
+          p.price(style="color:red") AU $#{li.seller.CurrentPrice.amount}
          else
-          p.price(style="color:green") #{li.seller.CurrentPrice.amount}
-         p.sold #{li.seller.QuantitySold}
+          p.price(style="color:green") AU $#{li.seller.CurrentPrice.amount}
+         p.sold #{li.seller.QuantitySold} sold
          a(target="_blank", href=li.seller.ViewItemURLForNaturalSearch) #{li.seller.Title}
