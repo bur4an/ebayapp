@@ -8,8 +8,8 @@ exports.items;
 exports.list = function(req, res, next) {
     exports.items = [];
     //res.send('Profile page of '+ req.session.user.username +'<br>'+' click to <a href="/logout">logout</a>');
-    var keyword = req.body.keyword ? req.body.keyword : req.session.brand ? req.session.brand : next();
-    var store = 'eSuperPrices';
+    var keyword = req.body.keyword;
+    var store = req.body.ebaystore;
     ebay.xmlRequest({
         serviceName: 'Finding',
         opType: 'findItemsIneBayStores',

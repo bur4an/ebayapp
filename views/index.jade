@@ -25,6 +25,7 @@ block content
      if(req.readyState == 4){
       console.log(typeof req.response, req.response);
       update = JSON.parse(req.response);
+      
       if(update.Errors) sMsg = update.Errors.length  ? errMsg(update.Errors) : update.Errors.ShortMessage;
       document.getElementById(update.ItemID).innerHTML = update.code ? update.code : update.Ack+"! "+sMsg;
       document.getElementsByName(update.ItemID)[0].innerHTML = "AU $"+data.price;
@@ -34,11 +35,16 @@ block content
    }
  p(text-align="right") 
   a(href="/logout") Logout
- div.form-group
-  form(name="list", method="post", action='/listing')
+ div.input-group
+  //h2.form-signin-heading Search
+  form.form-group(name="list", method="post", action='/listing')
+   select(id="ebaystore", name="ebaystore")
+    //-for(var i = 1;i<3;i++)
+    option(value="eSuperPrices") eSuperPrices
+    option(value="Mobile Tech Mart") Mobile Tech Mart
    input(type="text",placeholder="Brand Name", name="keyword", size="20")
-   input(type="text",placeholder="Store Name", name="seller", size="20")
-   input(type="submit", value="Search")
+   input(type="text",placeholder="Store Name", name="seller", size="20") 
+   button.btn.btn-large.btn-primary(type="submit") Search
  table.table(align="center")
   tbody
    if(list) 

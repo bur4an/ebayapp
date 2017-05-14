@@ -1,8 +1,11 @@
-form(id="login", method="POST", action="/login")
-	lable(for='username') User Name
-	input#username(type='text', name='username')
-	lable(for='password') Password
-	input#password(type='text', name='password')
-	input(type="submit", value="Log In")
-		
-h1!=message
+extends layout
+
+block content
+			.container
+				form.form-signin(action="/login", method="post")
+					h2.form-signin-heading Please sign in
+					input.input-block-level(type="text", name="username", placeholder="Email address")
+					input.input-block-level(type="password", name="password", placeholder="Password")
+					label.checkbox.
+						<input type="checkbox" value="remember-me" /> Remember me
+					button.btn.btn-large.btn-primary(type="submit") Sign in

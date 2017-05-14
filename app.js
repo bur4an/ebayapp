@@ -101,9 +101,11 @@ Routes
 app.get("/", function (req, res) {
 
     if (req.session.user) {
-        res.send("Welcome " + req.session.user.username + "<br>" + "<a href='/logout'>logout</a>");
+        //res.send("Welcome " + req.session.user.username + "<br>" + "<a href='/listing'>logout</a>");
+        res.redirect('/listing');
     } else {
-        res.send("<a href='/login'> Login</a>" + "<br>" + "<a href='/signup'> Sign Up</a>");
+        //res.send("<a href='/login'> Login</a>" + "<br>" + "<a href='/signup'> Sign Up</a>");
+        res.redirect('/login');
     }
 });
 
@@ -163,7 +165,7 @@ app.post("/login", function (req, res) {
 
 app.get('/logout', function (req, res) {
     req.session.destroy(function () {
-        res.redirect('/');
+        res.redirect('/login');
     });
 });
 
@@ -173,7 +175,7 @@ app.get('/listing', requiredAuthentication, function(req, res){
 app.post('/listing', requiredAuthentication, request.list, request.seller, request.cost, function (req, res) {
     res.redirect('/listing');      
 });
-app.post('/update', function (req, res) {
+app.post('/update', requiredAuthentication, function (req, res) {
     //console.log(request.revisedItem);
     console.log(req.body);
     if (req.body.price > 0 && req.body.id)
