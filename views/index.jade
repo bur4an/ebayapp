@@ -19,12 +19,14 @@ block content
     each li in list
      tr
       td(width="10%")
-       img(src=li.GalleryURL)
+       div.details
+        img(src=li.GalleryURL)
       td(width="40%")
        div.details
-        label.price(name=li.ItemID) AU $#{li.CurrentPrice.amount}
-        |  / 
-        span.sold #{li.QuantitySold} sold
+        span.price(name=li.ItemID) AU $#{li.CurrentPrice.amount} 
+        | / 
+        span.sold #{li.QuantitySold} sold 
+        | / #{li.Quantity} Available
         if(li.ingram)
          p 
           | BuyInc: 
@@ -50,7 +52,8 @@ block content
        label.query(id=li.ItemID)
       if(li.seller)
        td(width="10%")
-        img(src=li.seller.GalleryURL)
+        div.details
+         img(src=li.seller.GalleryURL)
        td(width="40%")
         div.details
          if(parseFloat(li.seller.CurrentPrice.amount) < parseFloat(li.CurrentPrice.amount))
