@@ -1,38 +1,6 @@
 extends layout
 
 block content
- script.
-   var data = {};
-   var setPrice = function (p,i){
-    data.price = p;
-    data.id = i;
-   }
-   var errMsg = function(e){
-    var m = '';
-    for(var i=0; i < e.length; i++){
-     m += e[i].ShortMessage+" ";
-     if(i+1 == e.length)
-      return m;
-    }
-   }
-   var update = function (){
-    console.log(data);
-    var update, sMsg = '';
-    var req = new XMLHttpRequest();
-    req.open("POST","/update");
-    req.setRequestHeader("Content-Type", "application/JSON;charset=UTF-8");
-    req.onreadystatechange = function(){
-     if(req.readyState == 4){
-      console.log(typeof req.response, req.response);
-      update = JSON.parse(req.response);
-      
-      if(update.Errors) sMsg = update.Errors.length  ? errMsg(update.Errors) : update.Errors.ShortMessage;
-      document.getElementById(update.ItemID).innerHTML = update.code ? update.code : update.Ack+"! "+sMsg;
-      document.getElementsByName(update.ItemID)[0].innerHTML = "AU $"+data.price;
-     }
-    }
-    req.send(JSON.stringify(data));
-   }
  p(text-align="right") 
   a(href="/logout") Logout
  div.input-group
@@ -55,15 +23,21 @@ block content
       td(width="40%")
        div.details
         label.price(name=li.ItemID) AU $#{li.CurrentPrice.amount}
+        |  / 
+        span.sold #{li.QuantitySold} sold
         if(li.ingram)
          p 
           | BuyInc: 
           span.cost #{li.ingram["Customer Price with Tax"]} 
-          | Fee:
-          span.cost #{parseInt(li.CurrentPrice.amount * .105 + .80)} 
-        p 
-         | #{li.Quantity} Available / 
-         span.sold #{li.QuantitySold} sold
+          | Fee: 
+          span.cost ~$#{parseInt(li.CurrentPrice.amount * .105 + .80)} 
+          | Available: 
+          span.cost(style="font-size:16px") #{li.ingram["Available Quantity"]}  
+          | ETA: 
+          span 
+           - var eta = li.ingram["Backlog ETA"].replace(/(....)(..)(..)/, "$1/$2/$3")
+           | #{eta}
+
         div.form-group(cellspacing="5px")
          //form(name="update", method="post", action='#', onsubmit="update()")
          input(type="text", name="price", size="6", onchange="setPrice(this.value, #{li.ItemID})")
@@ -76,8 +50,13 @@ block content
        td(width="40%")
         div.details
          if(parseFloat(li.seller.CurrentPrice.amount) < parseFloat(li.CurrentPrice.amount))
-          p.price(style="color:red") AU $#{li.seller.CurrentPrice.amount}
+          label.price(style="color:red") AU $#{li.seller.CurrentPrice.amount}
          else
-          p.price(style="color:green") AU $#{li.seller.CurrentPrice.amount}
-         p.sold #{li.seller.QuantitySold} sold
-         a(target="_blank", href=li.seller.ViewItemURLForNaturalSearch) #{li.seller.Title}
+          label.price(style="color:green") AU $#{li.seller.CurrentPrice.amount}
+         |  / 
+         span.sold #{li.seller.QuantitySold} sold
+         br
+         span.seller #{li.seller.Seller.UserID} 
+         span.feedback (#{li.seller.Seller.FeedbackScore})
+         p
+          a(target="_blank", href=li.seller.ViewItemURLForNaturalSearch) #{li.seller.Title}

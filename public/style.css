@@ -8,8 +8,14 @@
   .sold {
    color:#eb2629;
    font-weight:bold;
-   font-size: 14px;
+   font-size: 14px
   }
   .details {
    margin-top: 15px 
+  }
+  .seller {
+   font-style:italic  
+  }
+  .feedback {
+    color: green
   }
