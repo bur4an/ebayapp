@@ -37,6 +37,10 @@ block content
           span 
            - var eta = li.ingram["Backlog ETA"].replace(/(....)(..)(..)/, "$1/$2/$3")
            | #{eta}
+        else
+         p.price(style="color:red")
+          | <--NOT FOUND IN INGRAM PRICELIST-->
+           
 
         div.form-group(cellspacing="5px")
          //form(name="update", method="post", action='#', onsubmit="update()")
